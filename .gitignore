@@ -1,0 +1,11 @@
+# Build
+bin/
+obj/
+
+# Rider / JetBrains
+.idea/
+*.DotSettings.user
+
+# OS
+.DS_Store
+Thumbs.db
