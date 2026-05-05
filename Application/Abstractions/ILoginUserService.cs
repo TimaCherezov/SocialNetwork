@@ -1,8 +1,9 @@
+using Application.DTO;
 using Application.DTOs;
 
 namespace Application.Abstractions;
 
 public interface ILoginUserService
 {
-    Task<UserResponse> LoginAsync(LoginUserRequest request, CancellationToken cancellationToken = default);
+    Task<TokenPairResponse> LoginAsync(LoginUserRequest request, CancellationToken cancellationToken = default);
 }

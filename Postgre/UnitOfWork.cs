@@ -3,11 +3,29 @@ using Domain.Abstractions.Repositories;
 
 namespace Persistance;
 
-public class UnitOfWork(AppDbContext dbContext) : IUnitOfWork
+public class UnitOfWork : IUnitOfWork
 {
-    public IUserRepository Users { get; } = new UserRepository(dbContext);
-    public IPostRepository Posts { get; } = new PostRepository(dbContext);
+    public IUserRepository Users { get; }
+    public IPostRepository Posts { get; }
+    public IRefreshTokenRepostory RefreshTokens { get; }
+    public INotificationRepository Notifications { get; }
+    private readonly AppDbContext _dbContext;
+
+    public UnitOfWork(
+        AppDbContext dbContext, 
+        IUserRepository userRepository, 
+        IPostRepository postRepository, 
+        IRefreshTokenRepostory refreshTokenRepository,
+        INotificationRepository notificationRepository
+        )
+    {
+        _dbContext = dbContext;
+        Users = userRepository;
+        Posts = postRepository;
+        RefreshTokens = refreshTokenRepository;
+        Notifications = notificationRepository;
+    }
 
     public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
-        => dbContext.SaveChangesAsync(cancellationToken);
+        => _dbContext.SaveChangesAsync(cancellationToken);
 }

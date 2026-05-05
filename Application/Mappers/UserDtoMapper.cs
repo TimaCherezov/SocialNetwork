@@ -5,15 +5,6 @@ namespace Application.Mappers;
 
 public static class UserDtoMapper
 {
-    public static UserResponse ToDto(User user, string jwtToken)
-    {
-        return new UserResponse
-        {
-            Id = user.Id,
-            UserName = user.UserName,
-            Email = user.Email,
-            Token = jwtToken
-        };
-    }
+    public static UserResponse ToDto(User user) => new(user.Id, user.UserName, user.Email);
 }
 

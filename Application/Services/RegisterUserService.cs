@@ -2,30 +2,24 @@ using Application.Abstractions;
 using Application.DTOs;
 using Application.Mappers;
 using Domain.Abstractions;
-using Domain.Abstractions.Repositories;
 using Domain.Entities;
+using Domain.Events;
 using Microsoft.AspNetCore.Identity;
 
 namespace Application.Services;
 
-public class RegisterUserService : IRegisterUserService
+public class RegisterUserService(
+    IUnitOfWork unitOfWork,
+    IPasswordHasher<User> passwordHasher,
+    IEventDispatcher eventDispatcher)
+    : IRegisterUserService
 {
-    private readonly IUnitOfWork _unitOfWork;
-    private readonly IPasswordHasher<User> _passwordHasher;
-    private readonly IJwtTokenService _jwtTokenService;
-
-    public RegisterUserService(IUnitOfWork unitOfWork, IPasswordHasher<User> passwordHasher, IJwtTokenService jwtTokenService)
-    {
-        _unitOfWork = unitOfWork;
-        _passwordHasher = passwordHasher;
-        _jwtTokenService = jwtTokenService;
-    }
 
     public async Task<UserResponse> RegisterAsync(
         RegisterUserRequest request, 
         CancellationToken cancellationToken = default)
     {
-        var isExisted = await _unitOfWork.Users
+        var isExisted = await unitOfWork.Users
             .GetByUserNameAsync(request.UserName, cancellationToken);
         if (isExisted != null)
         {
@@ -42,12 +36,15 @@ public class RegisterUserService : IRegisterUserService
             Birthday = request.Birthday,
             CreatedAt = DateTime.UtcNow
         };
-        user.PasswordHash = _passwordHasher.HashPassword(user, request.Password);
+        user.PasswordHash = passwordHasher.HashPassword(user, request.Password);
 
-        await _unitOfWork.Users.AddAsync(user, cancellationToken);
-        await _unitOfWork.SaveChangesAsync(cancellationToken);
+        await unitOfWork.Users.AddAsync(user, cancellationToken);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
+
+        await eventDispatcher.DispatchAsync(
+            new UserRegisteredDomainEvent(user.Id, user.UserName, user.Email, DateTime.UtcNow),
+            cancellationToken);
         
-        var jwt = _jwtTokenService.GenerateToken(user.Id, user.UserName, user.UserName);
-        return UserDtoMapper.ToDto(user, jwt);
+        return UserDtoMapper.ToDto(user);
     }
 }

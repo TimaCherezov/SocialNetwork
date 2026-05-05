@@ -6,18 +6,11 @@ using Domain.Entities;
 
 namespace Application.Services;
 
-public class GetUserService : IGetUserService
+public class GetUserService(IUnitOfWork unitOfWork) : IGetUserService
 {
-    private readonly IUnitOfWork _unitOfWork;
-
-    public GetUserService(IUnitOfWork unitOfWork)
-    {
-        _unitOfWork = unitOfWork;
-    }
-
     public async Task<User?> GetByIdAsync(Guid userId, CancellationToken cancellationToken = default)
     {
-        var user = await _unitOfWork.Users.GetByIdAsync(userId, cancellationToken);
+        var user = await unitOfWork.Users.GetByIdAsync(userId, cancellationToken);
         return user;
     }
 }

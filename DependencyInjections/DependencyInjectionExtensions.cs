@@ -5,6 +5,7 @@ using Application.Settings;
 using Domain.Abstractions;
 using Domain.Abstractions.Repositories;
 using Domain.Entities;
+using Domain.Events;
 using JwtToken;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -13,6 +14,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Persistance;
+using Persistance.Repositories;
 
 namespace DependencyInjections;
 
@@ -20,9 +22,15 @@ public static class DependencyInjectionExtensions
 {
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
+        services.AddScoped<IEventDispatcher, EventDispatcher>();
+        services.AddScoped<IEventHandler<UserRegisteredDomainEvent>, NotifyAllUsersOnUserRegisteredHandler>();
+        services.AddScoped<IEventHandler<PostCreatedDomainEvent>, NotifyAllUsersOnPostCreatedHandler>();
+
         services.AddScoped<IRegisterUserService, RegisterUserService>();
         services.AddScoped<IGetUserService, GetUserService>();
         services.AddScoped<ILoginUserService, LoginUserService>();
+        services.AddScoped<IRefreshTokenService, RefreshTokenService>();
+        services.AddScoped<ICreatePostService, CreatePostService>();
 
         return services;
     }
@@ -35,7 +43,10 @@ public static class DependencyInjectionExtensions
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IPostRepository, PostRepository>();
+        services.AddScoped<IRefreshTokenRepostory, RefreshTokenRepository>();
+        services.AddScoped<INotificationRepository, NotificationRepository>();
         services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
+        services.AddScoped<INotificationBroadcaster, Infrastructure.LoginNotification.LoggingNotificationBroadcaster>();
 
         return services;
     }
