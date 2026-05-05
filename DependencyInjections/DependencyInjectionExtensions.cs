@@ -24,13 +24,16 @@ public static class DependencyInjectionExtensions
     {
         services.AddScoped<IEventDispatcher, EventDispatcher>();
         services.AddScoped<IEventHandler<UserRegisteredDomainEvent>, NotifyAllUsersOnUserRegisteredHandler>();
+        services.AddScoped<IEventHandler<UserRegisteredDomainEvent>, SaveUserNotificationHandler>();
         services.AddScoped<IEventHandler<PostCreatedDomainEvent>, NotifyAllUsersOnPostCreatedHandler>();
+        services.AddScoped<IEventHandler<PostCreatedDomainEvent>, SavePostNotificationHandler>();
 
         services.AddScoped<IRegisterUserService, RegisterUserService>();
         services.AddScoped<IGetUserService, GetUserService>();
         services.AddScoped<ILoginUserService, LoginUserService>();
         services.AddScoped<IRefreshTokenService, RefreshTokenService>();
         services.AddScoped<ICreatePostService, CreatePostService>();
+        services.AddScoped<IGetNotificationsServer, GetNotificationsService>();
 
         return services;
     }

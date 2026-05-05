@@ -33,4 +33,7 @@ public class UserRepository(AppDbContext dbContext) : IUserRepository
 
     public async Task<bool> IsNickNameTakenAsync(string nickName, CancellationToken cancellationToken = default)
         => await dbContext.Users.AnyAsync(u => u.UserName == nickName, cancellationToken);
+
+    public async Task<IEnumerable<User>> GetAllAsync(CancellationToken cancellationToken = default)
+        => await dbContext.Users.ToListAsync(cancellationToken);
 }
