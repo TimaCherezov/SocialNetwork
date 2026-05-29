@@ -22,7 +22,6 @@ public class LoginUserService(
         {
             throw new InvalidOperationException("Invalid email");
         }
-        
         var result  = passwordHasher.VerifyHashedPassword(user, user.PasswordHash, request.Password);
         if (result == PasswordVerificationResult.Failed)
         {

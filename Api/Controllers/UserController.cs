@@ -28,15 +28,20 @@ public class AuthController(
     {
         var response = await loginUserService.LoginAsync(request, cancellationToken);
         HttpContext.Response.Cookies.Append("just_cookie", response.AccessToken);
-        return Ok(response);
+        HttpContext.Response.Cookies.Append("refresh_token", response.RefreshToken);
+        return Ok(new { response.AccessToken});
     }
 
     [HttpPost("refresh")]
-    public async Task<ActionResult<TokenPairResponse>> Refresh([FromBody] RefreshRequest request, CancellationToken cancellationToken)
+    public async Task<ActionResult<TokenPairResponse>> Refresh(CancellationToken cancellationToken)
     {
-        var result = await refreshTokenService.RefreshAsync(request.RefreshToken, cancellationToken);
+        var refreshToken = HttpContext.Request.Cookies["refresh_token"];
+        if (string.IsNullOrEmpty(refreshToken))
+        {
+            return Unauthorized();
+        }
+        var result = await refreshTokenService.RefreshAsync(refreshToken, cancellationToken);
         return Ok(result);
     }
 
 }
-

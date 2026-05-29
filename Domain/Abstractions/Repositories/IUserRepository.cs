@@ -12,4 +12,6 @@ public interface IUserRepository
     Task RemoveAsync(User user, CancellationToken cancellationToken = default);
     Task<bool> IsNickNameTakenAsync(string nickName, CancellationToken cancellationToken = default);
     Task<IEnumerable<User>> GetAllAsync(CancellationToken cancellationToken = default);
+    Task<IEnumerable<User>> GetByIdsAsync(Guid[] ids, CancellationToken cancellationToken = default);
+    
 }

@@ -36,4 +36,10 @@ public class UserRepository(AppDbContext dbContext) : IUserRepository
 
     public async Task<IEnumerable<User>> GetAllAsync(CancellationToken cancellationToken = default)
         => await dbContext.Users.ToListAsync(cancellationToken);
+
+    public async Task<IEnumerable<User>> GetByIdsAsync(Guid[] ids, CancellationToken cancellationToken = default)
+    {
+        var idsSet = ids.ToHashSet();
+        return await dbContext.Users.Where(u => idsSet.Contains(u.Id)).ToListAsync(cancellationToken);
+    }
 }

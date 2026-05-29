@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Application.Services;
 
-public sealed class EventDispatcher(IServiceProvider serviceProvider) : IEventDispatcher
+public class EventDispatcher(IServiceProvider serviceProvider) : IEventDispatcher
 {
     public Task DispatchAsync<TEvent>(TEvent domainEvent, CancellationToken cancellationToken = default)
         where TEvent : IDomainEvent

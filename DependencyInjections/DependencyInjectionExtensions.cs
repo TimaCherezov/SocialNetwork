@@ -6,6 +6,7 @@ using Domain.Abstractions;
 using Domain.Abstractions.Repositories;
 using Domain.Entities;
 using Domain.Events;
+using Redis;
 using JwtToken;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -15,6 +16,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Persistance;
 using Persistance.Repositories;
+using StackExchange.Redis;
+using LoginNotification;
 
 namespace DependencyInjections;
 
@@ -27,6 +30,7 @@ public static class DependencyInjectionExtensions
         services.AddScoped<IEventHandler<UserRegisteredDomainEvent>, SaveUserNotificationHandler>();
         services.AddScoped<IEventHandler<PostCreatedDomainEvent>, NotifyAllUsersOnPostCreatedHandler>();
         services.AddScoped<IEventHandler<PostCreatedDomainEvent>, SavePostNotificationHandler>();
+        services.AddScoped<IEventHandler<PostCreatedDomainEvent>, IncrementLeaderboardOnPostCreatedHandler>();
 
         services.AddScoped<IRegisterUserService, RegisterUserService>();
         services.AddScoped<IGetUserService, GetUserService>();
@@ -35,6 +39,16 @@ public static class DependencyInjectionExtensions
         services.AddScoped<ICreatePostService, CreatePostService>();
         services.AddScoped<IGetNotificationsServer, GetNotificationsService>();
 
+        return services;
+    }
+
+    public static IServiceCollection AddRedis(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.Configure<RedisSettings>(configuration.GetSection(RedisSettings.Section));
+        var settings = configuration.GetSection(RedisSettings.Section).Get<RedisSettings>();
+
+        services.AddSingleton<IConnectionMultiplexer>(_ => ConnectionMultiplexer.Connect(settings.ConnectionString));
+        services.AddScoped<ILeaderboardService, RedisLeaderboardService>();
         return services;
     }
 
@@ -49,7 +63,8 @@ public static class DependencyInjectionExtensions
         services.AddScoped<IRefreshTokenRepostory, RefreshTokenRepository>();
         services.AddScoped<INotificationRepository, NotificationRepository>();
         services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
-        services.AddScoped<INotificationBroadcaster, Infrastructure.LoginNotification.LoggingNotificationBroadcaster>();
+        services.AddScoped<INotificationBroadcaster, LoggingNotificationBroadcaster>();
+
 
         return services;
     }
@@ -86,7 +101,7 @@ public static class DependencyInjectionExtensions
                     }
                 };
             });
-        
+
         return services;
     }
 }
