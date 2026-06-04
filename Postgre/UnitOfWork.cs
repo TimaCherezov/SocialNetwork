@@ -9,6 +9,8 @@ public class UnitOfWork : IUnitOfWork
     public IPostRepository Posts { get; }
     public IRefreshTokenRepostory RefreshTokens { get; }
     public INotificationRepository Notifications { get; }
+    public IConversationRepository Conversations { get; }
+    public IMessageRepository Messages { get; }
     private readonly AppDbContext _dbContext;
 
     public UnitOfWork(
@@ -16,7 +18,9 @@ public class UnitOfWork : IUnitOfWork
         IUserRepository userRepository, 
         IPostRepository postRepository, 
         IRefreshTokenRepostory refreshTokenRepository,
-        INotificationRepository notificationRepository
+        INotificationRepository notificationRepository,
+        IConversationRepository conversationRepository,
+        IMessageRepository messageRepository
         )
     {
         _dbContext = dbContext;
@@ -24,6 +28,8 @@ public class UnitOfWork : IUnitOfWork
         Posts = postRepository;
         RefreshTokens = refreshTokenRepository;
         Notifications = notificationRepository;
+        Conversations = conversationRepository;
+        Messages = messageRepository;
     }
 
     public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

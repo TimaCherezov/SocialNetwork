@@ -10,6 +10,8 @@ public interface IUnitOfWork
     IPostRepository Posts { get; }
     IRefreshTokenRepostory RefreshTokens { get; }
     INotificationRepository Notifications { get; }
+    IConversationRepository Conversations { get; }
+    IMessageRepository Messages { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

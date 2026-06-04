@@ -25,7 +25,9 @@ public static class DependencyInjectionExtensions
 {
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
+
         services.AddScoped<IEventDispatcher, EventDispatcher>();
+        services.AddScoped<IEventHandler<MessageSentDomainEvent>, SignalRMessageSentHandler>();
         services.AddScoped<IEventHandler<UserRegisteredDomainEvent>, NotifyAllUsersOnUserRegisteredHandler>();
         services.AddScoped<IEventHandler<UserRegisteredDomainEvent>, SaveUserNotificationHandler>();
         services.AddScoped<IEventHandler<PostCreatedDomainEvent>, NotifyAllUsersOnPostCreatedHandler>();
@@ -38,6 +40,8 @@ public static class DependencyInjectionExtensions
         services.AddScoped<IRefreshTokenService, RefreshTokenService>();
         services.AddScoped<ICreatePostService, CreatePostService>();
         services.AddScoped<IGetNotificationsServer, GetNotificationsService>();
+        services.AddScoped<ISendMessage, SendMessage>();
+        services.AddScoped<ICreateConversationService, CreateConversationService>();
 
         return services;
     }
@@ -62,6 +66,8 @@ public static class DependencyInjectionExtensions
         services.AddScoped<IPostRepository, PostRepository>();
         services.AddScoped<IRefreshTokenRepostory, RefreshTokenRepository>();
         services.AddScoped<INotificationRepository, NotificationRepository>();
+        services.AddScoped<IConversationRepository, ConversationRepository>();
+        services.AddScoped<IMessageRepository, MessageRepository>();
         services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
         services.AddScoped<INotificationBroadcaster, LoggingNotificationBroadcaster>();
 

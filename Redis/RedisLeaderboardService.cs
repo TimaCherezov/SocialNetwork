@@ -6,7 +6,7 @@ using StackExchange.Redis;
 
 namespace Redis;
 
-public sealed class RedisLeaderboardService(
+public class RedisLeaderboardService(
     IConnectionMultiplexer multiplexer,
     IOptions<RedisSettings> options,
     IUserRepository userRepository)
