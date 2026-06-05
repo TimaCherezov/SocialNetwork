@@ -7,7 +7,7 @@ using Domain.Events;
 
 namespace Application.Services;
 
-public class CreatePostService(IUnitOfWork unitOfWork, IEventDispatcher eventDispatcher) : ICreatePostService
+public class CreatePostService(IUnitOfWork unitOfWork, IKafkaProducer<PostCreatedDomainEvent> kafkaProducer) : ICreatePostService
 {
     public async Task<PostResponse> CreatePost(CreatePostRequest request, CancellationToken cancellationToken = default)
     {
@@ -26,10 +26,11 @@ public class CreatePostService(IUnitOfWork unitOfWork, IEventDispatcher eventDis
         await unitOfWork.Posts.AddAsync(post, cancellationToken);
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        await eventDispatcher.DispatchAsync(
-            new PostCreatedDomainEvent(post.Id, post.UserId, post.Title, DateTime.UtcNow),
+        // await eventDispatcher.DispatchAsync(
+        //     new PostCreatedDomainEvent(post.Id, post.UserId, post.Title, DateTime.UtcNow),
+        //     cancellationToken);
+        await kafkaProducer.ProduceAsync(new PostCreatedDomainEvent(post.Id, post.UserId, post.Title, DateTime.UtcNow),
             cancellationToken);
-
         return PostDtoMapper.ToDto(post);
     }
 }

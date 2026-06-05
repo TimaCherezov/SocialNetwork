@@ -18,6 +18,7 @@ using Persistance;
 using Persistance.Repositories;
 using StackExchange.Redis;
 using LoginNotification;
+using Messaging.Kafka;
 
 namespace DependencyInjections;
 
@@ -71,6 +72,22 @@ public static class DependencyInjectionExtensions
         services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
         services.AddScoped<INotificationBroadcaster, LoggingNotificationBroadcaster>();
 
+
+        return services;
+    }
+
+    public static IServiceCollection AddProducer<TMessage>(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.Configure<KafkaSettings>(configuration.GetSection(KafkaSettings.Section));
+        services.AddSingleton<IKafkaProducer<TMessage>, KafkaProducer<TMessage>>();
+        return services;
+    }
+
+    public static IServiceCollection AddConsumer<TMessage>(this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        services.Configure<KafkaSettings>(configuration.GetSection(KafkaSettings.Section));
+        services.AddHostedService<KafkaConsumer<PostCreatedDomainEvent>>();
 
         return services;
     }

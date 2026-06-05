@@ -25,6 +25,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Redis", "Redis\Redis.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoginNotification", "LoginNotification\LoginNotification.csproj", "{E426D47F-691A-48E8-9441-1A4AE36F66FB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messaging.Kafka", "Infrastructure\Messaging.Kafka\Messaging.Kafka.csproj", "{9D8128F7-237F-4119-8DA6-0D2DF4C321E0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,7 @@ Global
 		{1AED0BE8-8240-4506-9DD1-94B16A1A72FA} = {534E3BDD-8A7D-40C7-A45C-6F4598195DC2}
 		{4FF6C97A-ACFD-47A1-A6E0-BC19EA431F75} = {534E3BDD-8A7D-40C7-A45C-6F4598195DC2}
 		{E426D47F-691A-48E8-9441-1A4AE36F66FB} = {534E3BDD-8A7D-40C7-A45C-6F4598195DC2}
+		{9D8128F7-237F-4119-8DA6-0D2DF4C321E0} = {534E3BDD-8A7D-40C7-A45C-6F4598195DC2}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{EFC291FF-B4A1-43A4-ACBE-720D8905E977}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -73,5 +76,9 @@ Global
 		{E426D47F-691A-48E8-9441-1A4AE36F66FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E426D47F-691A-48E8-9441-1A4AE36F66FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E426D47F-691A-48E8-9441-1A4AE36F66FB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9D8128F7-237F-4119-8DA6-0D2DF4C321E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9D8128F7-237F-4119-8DA6-0D2DF4C321E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9D8128F7-237F-4119-8DA6-0D2DF4C321E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9D8128F7-237F-4119-8DA6-0D2DF4C321E0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
